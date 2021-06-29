@@ -1,7 +1,7 @@
 {
   "name": "video2desmos",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "index.js",
   "license": "MIT",
   "scripts": {
     "postinstall": "ffmpeg -i in.mp4 in/frame%04d.png -hide_banner",
