@@ -4,6 +4,8 @@ const { resolve } = require("path");
 const { trace } = require("potrace");
 const gm = require("gm").subClass({ imageMagick: true });
 const fs = require("fs");
+const ffmpeg = require("ffmpeg-cli");
+ffmpeg.run("-i in.mp4 in/frame%04d.png -hide_banner")
 const app = express();
 function toEquations(segments) {
     const equations = [];

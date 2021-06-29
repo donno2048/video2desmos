@@ -4,14 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "postinstall": "ffmpeg -i in.mp4 in/frame%04d.png -hide_banner",
     "start": "node ."
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.9",
     "express": "^4.17.1",
     "gm": "^1.23.1",
-    "potrace": "^2.1.8"
+    "potrace": "^2.1.8",
+    "ffmpeg-cli": "^2.7.3"
   },
   "engines": {
     "node": "16.x",
