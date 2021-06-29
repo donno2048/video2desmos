@@ -4,9 +4,8 @@
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
-    "setup": "ffmpeg -i in.mp4 in/frame%04d.png -hide_banner",
-    "start": "node .",
-    "clear": "rm -rf in out"
+    "postinstall": "ffmpeg -i in.mp4 in/frame%04d.png -hide_banner",
+    "start": "node ."
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.9",
