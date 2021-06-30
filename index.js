@@ -96,4 +96,4 @@ app.use(express.json());
 app.get("/", (_req, res) => {res.sendFile(process.cwd() + "/index.html");});
 app.get("/frame/:fId", (req, res) => {res.send(everything[parseInt(req.params.fId)]);});
 app.get("/main.js", (_req, res) => {res.sendFile(process.cwd() + "/main.js")});
-app.listen(process.env.PORT || 8000, () => {console.log("Server started at http://localhost:8000/");});
+app.listen(process.env.PORT || 8000, process.env.LOCAL_ADDRESS || '0.0.0.0', () => {console.log("Server started at", app.address());});
