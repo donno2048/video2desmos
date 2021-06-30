@@ -4,8 +4,6 @@ const { resolve } = require("path");
 const { trace } = require("potrace");
 const gm = require("gm").subClass({ imageMagick: true });
 const fs = require("fs");
-const ffmpeg = require("ffmpeg-cli");
-ffmpeg.runSync("-i in.mp4 in/frame%04d.png -hide_banner")
 const app = express();
 function toEquations(segments) {
     const equations = [];
@@ -93,40 +91,9 @@ function toSegments(d) {
     return segments;
 }
 function parseCoord(coord, index) {return index === 0 ? coord : 1000 - coord;}
-const traceFrame = (fileName) => {
-    let fName = fileName.slice(fileName.lastIndexOf("/") + 1, fileName.length);
-    fName = fName.slice(0, fName.lastIndexOf("."));
-    trace(`./in/${fileName}`, (err, svg) => {
-        if (err) throw err;
-        fs.writeFileSync(`${process.cwd()}/out/${fName}.svg`, svg);
-    });
-};
-fs.readdir(process.cwd() + "/in/", (_err1, files1) => {
-    fs.readdir(process.cwd() + "/out/", (_err2, files2) => {
-        if(files1.length != files2.length) {
-            var inDir = process.cwd() + "/in/";
-            const frames = fs.readdirSync(resolve(process.cwd(), inDir)).filter((file) => file.endsWith(".png"));
-            const length = frames.length;
-            var index = 0;
-            frames.forEach((frame) => {
-                const framePath = `${process.cwd()}/in/${frame}`;
-                gm(framePath).edge(4).write(framePath, () => {});
-                traceFrame(frame);
-                process.stdout.write(100 * ++index / length + "%"+ " ".repeat(15) +"\r");
-            });
-        }
-        app.use(express.json());
-        const frameNames = fs.readdirSync(resolve(process.cwd(), "./out/")).filter((file) => file.endsWith(".svg"));
-        const dList = frameNames.map((frameName) => {
-            const data = fs.readFileSync("./out/" + frameName, "utf-8");
-            const $ = load(data);
-            //height = parseFloat($("svg").attr("width"));
-            return $("svg").children("path").attr("d");
-        });
-        const everything = dList.map((d) => toEquations(toSegments(d)));
-        app.get("/", (_req, res) => {res.sendFile(process.cwd() + "/index.html");});
-        app.get("/frame/:fId", (req, res) => {res.send(everything[parseInt(req.params.fId)]);});
-        app.get("/main.js", (_req, res) => {res.sendFile(process.cwd() + "/main.js")});
-        app.listen(process.env.PORT || 8000, () => {console.log("Server started at http://localhost:8000/");});
-    });
-})
+const everything = fs.readdirSync(resolve(process.cwd(), "./out/")).filter((file) => file.endsWith(".svg")).map((frameName) => {return load(fs.readFileSync("./out/" + frameName, "utf-8"))("svg").children("path").attr("d");}).map((d) => toEquations(toSegments(d)));
+app.use(express.json());
+app.get("/", (_req, res) => {res.sendFile(process.cwd() + "/index.html");});
+app.get("/frame/:fId", (req, res) => {res.send(everything[parseInt(req.params.fId)]);});
+app.get("/main.js", (_req, res) => {res.sendFile(process.cwd() + "/main.js")});
+app.listen(process.env.PORT || 8000, () => {console.log("Server started at http://localhost:8000/");});
