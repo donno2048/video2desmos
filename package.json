@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.9",
-    "express": "^4.21.2",
+    "express": "^4.22.1",
     "gm": "^1.25.1",
     "potrace": "^2.1.8"
   }
